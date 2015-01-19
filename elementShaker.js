@@ -9,7 +9,7 @@ $(document).ready(function() {
 	rotateObjects = createRotateObjects($('.rotateElement'));
 	shakeAndRotateObjects = createShakeAndRotateObjects(
 			$('.shakeAndRotateElement'));
-	setInterval(tickElements, TIME_BETWEEN_FRAMES);
+	setInterval(tickObjects, TIME_BETWEEN_FRAMES);
 });
 
 function createShakeObjects(elements) {
