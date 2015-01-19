@@ -5,10 +5,9 @@ var rotateObjects = [];
 var shakeAndRotateObjects = [];
 
 $(document).ready(function() {
-	shakeObjects = createShakeObjects($('.shakeElement'));
-	rotateObjects = createRotateObjects($('.rotateElement'));
-	shakeAndRotateObjects = createShakeAndRotateObjects(
-			$('.shakeAndRotateElement'));
+	createShakeObjects($('.shakeElement'));
+	createRotateObjects($('.rotateElement'));
+	createShakeAndRotateObjects($('.shakeAndRotateElement'));
 	setInterval(tickObjects, TIME_BETWEEN_FRAMES);
 });
 
@@ -32,11 +31,9 @@ function createShakeAndRotateObjects(elements) {
 
 function objectFactory(element) {
 	var object = {
-		width: $(element).width(),
-		height: $(element).height(),
 		moveDirections: [Math.random() >= 0.5 ? true : false,
 				Math.random() >= 0.5 ? true : false],
-		moveMax: [$(element).width() / 2, $(element).height() / 2],
+		moveMax: $(element).height(),
 		moveVector: [0, 0],
 		rotation: 0,
 		element: element
@@ -55,28 +52,29 @@ function tickShakers(objects) {
 	for (var ii = 0; ii < objects.length; ii++) {
 		var object = objects[ii];
 		if (object.moveDirections[0]) {
-			object.moveVector[0]--;
+			object.moveVector[0] -= 2;
 		} else {
-			object.moveVector[0]++;
+			object.moveVector[0] += 2;
 		}
 
 		if (object.moveDirections[1]) {
-			object.moveVector[1]--;
+			object.moveVector[1] -= 2;
 		} else {
-			object.moveVector[1]++;
+			object.moveVector[1] += 2;
 		}
 
-		var transform = "translate(" + object.moveVector[0] + "px, " + 
-				object.moveVector[1] + "px)";
+		var transform = "translateX(" + object.moveVector[0] + "px) " + 
+				"translateY(" + object.moveVector[1] + "px)";
 
-		object.element.transform = transform;
+		object.element.style.transform = transform;
 
-		if (object.moveVector[0] <= object.moveMax[0] * -1 ||
-				object.moveVector[1] >= object.moveMax[0]) {
+		var distanceToMax = [1 - object.moveVector[0] / object.moveMax,
+				1 - object.moveVector[1] / object.moveMax];
+
+		if (Math.random() > distanceToMax[0]) {
 			object.moveDirections[0] = !object.moveDirections[0];
 		}
-		if (object.moveVector[1] <= object.moveMax[1] * -1 ||
-				object.moveVector[1] >= object.moveMax[0]) {
+		if (Math.random() > distanceToMax[1]) {
 			object.moveDirections[1] = !object.moveDirections[1];
 		}
 	}
