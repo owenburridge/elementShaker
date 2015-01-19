@@ -71,10 +71,12 @@ function tickShakers(objects) {
 		var distanceToMax = [1 - object.moveVector[0] / object.moveMax,
 				1 - object.moveVector[1] / object.moveMax];
 
-		if (Math.random() > distanceToMax[0]) {
+		if (object.moveVector[0] < -1 * object.moveMax ||
+				object.moveVector[1] > object.moveMax) {
 			object.moveDirections[0] = !object.moveDirections[0];
 		}
-		if (Math.random() > distanceToMax[1]) {
+		if (object.moveVector[1] < -1 * object.moveMax ||
+				object.moveVector[1] > object.moveMax) {
 			object.moveDirections[1] = !object.moveDirections[1];
 		}
 	}
