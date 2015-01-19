@@ -1,13 +1,13 @@
-var TIME_BETWEEN_FRAMES = 33;
+var TIME_BETWEEN_FRAMES = 50;
 
 var shakeObjects = [];
 var rotateObjects = [];
 var shakeAndRotateObjects = [];
 
 var SHAKE_INCREMENT = 1.5;
-var SHAKE_MAX_PERCENT_OF_ELEMENT_HEIGHT = 0.20;
+var SHAKE_MAX_PERCENT_OF_ELEMENT_HEIGHT = 0.33;
 
-var ROTATE_INCREMENT = 1.5;
+var ROTATE_INCREMENT = 5;
 var ROTATE_MAX = 35;
 
 $(document).ready(function() {
@@ -61,21 +61,22 @@ function tickShakers(objects) {
 	for (var ii = 0; ii < objects.length; ii++) {
 		var object = objects[ii];
 		if (object.moveDirections[0]) {
-			object.moveVector[0] -= SHAKE_INCREMENT;
-		} else {
 			object.moveVector[0] += SHAKE_INCREMENT;
+		} else {
+			object.moveVector[0] -= SHAKE_INCREMENT;
 		}
 
 		if (object.moveDirections[1]) {
-			object.moveVector[1] -= SHAKE_INCREMENT;
-		} else {
 			object.moveVector[1] += SHAKE_INCREMENT;
+		} else {
+			object.moveVector[1] -= SHAKE_INCREMENT;
 		}
 
+		object.translateTransform = "translateX(" + object.moveVector[0] + "px) " + 
+					"translateY(" + object.moveVector[1] + "px)";
+
 		updateTransform(object, 
-				["translateX(" + object.moveVector[0] + "px)", 
-					"translateY(" + object.moveVector[1] + "px)", 
-					object.rotationTransform]);
+				[object.translateTransform, object.rotationTransform]);
 
 		var distanceToMax = [
 				Math.min(1, Math.abs(object.moveVector[0] / object.moveMax)),
@@ -93,18 +94,32 @@ function tickShakers(objects) {
 function tickRotators (objects) {
 	for (var ii = 0; ii < objects.length; ii++) {
 		var object = objects[ii];
-		if (rotatePositive) {
+		var distanceToMaxRotate;
+		if (object.rotatePositive) {
 			object.rotation += ROTATE_INCREMENT;
 		} else {
 			object.rotation -= ROTATE_INCREMENT;
+		}
+
+		distanceToMaxRotate = ROTATE_MAX - Math.abs(object.rotation);
+
+		object.rotationTransform = "rotate(" + object.rotation + "deg)";
+
+		updateTransform(object,
+				[object.translateTransform, object.rotationTransform]);
+
+		var percentageOfMax = 
+				Math.min(1, Math.abs(1 / distanceToMaxRotate * 1.1 + 0.0000001));
+
+		if (Math.random() < percentageOfMax) {
+			object.rotatePositive = !object.rotatePositive;
 		}
 	}
 }
 
 function tickShakeAndRotators(objects) {
-	for (var ii = 0; ii < objects.length; ii++) {
-
-	}
+	tickRotators(objects);
+	tickShakers(objects);
 }
 
 function updateTransform(object, transforms) {
