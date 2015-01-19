@@ -6,19 +6,19 @@ var shakeAndRotateObjects = [];
 
 $(document).ready(function() {
 	shakeObjects = createShakeObjects($('.shakeElement'));
-	rotateObjects = createRotateElements($('.rotateElement'));
-	shakeAndRotateObjects = createShakeAndRotateElements(
+	rotateObjects = createRotateObjects($('.rotateElement'));
+	shakeAndRotateObjects = createShakeAndRotateObjects(
 			$('.shakeAndRotateElement'));
 	setInterval(tickElements, TIME_BETWEEN_FRAMES);
 });
 
-function createShakeElements(elements) {
+function createShakeObjects(elements) {
 	for (var ii = 0; ii < elements.length; ii++) {
 		shakeObjects.push(objectFactory(elements[ii]));
 	}
 }
 
-function createRotateObject(elements) {
+function createRotateObjects(elements) {
 	for (var ii = 0; ii < elements.length; ii++) {
 		rotateObjects.push(objectFactory(elements[ii]));
 	}
@@ -35,7 +35,7 @@ function objectFactory(element) {
 		width: $(element).width(),
 		height: $(element).height(),
 		moveDirections: [Math.random() >= 0.5 ? true : false,
-				Math.random() >= 0.5 ? true : false]
+				Math.random() >= 0.5 ? true : false],
 		moveMax: [$(element).width() / 2, $(element).height() / 2],
 		moveVector: [0, 0],
 		rotation: 0,
@@ -66,7 +66,8 @@ function tickShakers(objects) {
 			object.moveVector[1]++;
 		}
 
-		var transform = "translate: " + 
+		var transform = "translate(" + object.moveVector[0] + "px, " + 
+				object.moveVector[1] + "px)";
 
 		object.element.transform = transform;
 
