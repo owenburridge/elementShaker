@@ -41,7 +41,10 @@ function objectFactory(element) {
 				Math.random() >= 0.5 ? true : false],
 		moveMax: $(element).height() * SHAKE_MAX_PERCENT_OF_ELEMENT_HEIGHT,
 		moveVector: [0, 0],
+		translateTransform: '',
+		rotatePositive: Math.random() >= 0.5 ? true : false,
 		rotation: 0,
+		rotationTransform: '',
 		element: element
 	};
 
@@ -69,10 +72,10 @@ function tickShakers(objects) {
 			object.moveVector[1] += SHAKE_INCREMENT;
 		}
 
-		var transform = "translateX(" + object.moveVector[0] + "px) " + 
-				"translateY(" + object.moveVector[1] + "px)";
-
-		object.element.style.transform = transform;
+		updateTransform(object, 
+				["translateX(" + object.moveVector[0] + "px)", 
+					"translateY(" + object.moveVector[1] + "px)", 
+					object.rotationTransform]);
 
 		var distanceToMax = [
 				Math.min(1, Math.abs(object.moveVector[0] / object.moveMax)),
@@ -89,7 +92,12 @@ function tickShakers(objects) {
 
 function tickRotators (objects) {
 	for (var ii = 0; ii < objects.length; ii++) {
-
+		var object = objects[ii];
+		if (rotatePositive) {
+			object.rotation += ROTATE_INCREMENT;
+		} else {
+			object.rotation -= ROTATE_INCREMENT;
+		}
 	}
 }
 
@@ -97,4 +105,13 @@ function tickShakeAndRotators(objects) {
 	for (var ii = 0; ii < objects.length; ii++) {
 
 	}
+}
+
+function updateTransform(object, transforms) {
+	var transformString = '';
+	for (var ii = 0; ii < transforms.length; ii++) {
+		transformString += transforms[ii] + ' ';
+	}
+
+	object.element.style.transform = transformString;
 }
