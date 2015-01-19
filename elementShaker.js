@@ -4,6 +4,12 @@ var shakeObjects = [];
 var rotateObjects = [];
 var shakeAndRotateObjects = [];
 
+var SHAKE_INCREMENT = 1.5;
+var SHAKE_MAX_PERCENT_OF_ELEMENT_HEIGHT = 0.20;
+
+var ROTATE_INCREMENT = 1.5;
+var ROTATE_MAX = 35;
+
 $(document).ready(function() {
 	createShakeObjects($('.shakeElement'));
 	createRotateObjects($('.rotateElement'));
@@ -33,7 +39,7 @@ function objectFactory(element) {
 	var object = {
 		moveDirections: [Math.random() >= 0.5 ? true : false,
 				Math.random() >= 0.5 ? true : false],
-		moveMax: $(element).height(),
+		moveMax: $(element).height() * SHAKE_MAX_PERCENT_OF_ELEMENT_HEIGHT,
 		moveVector: [0, 0],
 		rotation: 0,
 		element: element
@@ -52,15 +58,15 @@ function tickShakers(objects) {
 	for (var ii = 0; ii < objects.length; ii++) {
 		var object = objects[ii];
 		if (object.moveDirections[0]) {
-			object.moveVector[0] -= 2;
+			object.moveVector[0] -= SHAKE_INCREMENT;
 		} else {
-			object.moveVector[0] += 2;
+			object.moveVector[0] += SHAKE_INCREMENT;
 		}
 
 		if (object.moveDirections[1]) {
-			object.moveVector[1] -= 2;
+			object.moveVector[1] -= SHAKE_INCREMENT;
 		} else {
-			object.moveVector[1] += 2;
+			object.moveVector[1] += SHAKE_INCREMENT;
 		}
 
 		var transform = "translateX(" + object.moveVector[0] + "px) " + 
@@ -76,15 +82,6 @@ function tickShakers(objects) {
 			object.moveDirections[0] = !object.moveDirections[0];
 		}
 		if (Math.random() < distanceToMax[1]) {
-			object.moveDirections[1] = !object.moveDirections[1];
-		}
-
-		if (object.moveVector[0] < -1 * object.moveMax ||
-				object.moveVector[1] > object.moveMax) {
-			object.moveDirections[0] = !object.moveDirections[0];
-		}
-		if (object.moveVector[1] < -1 * object.moveMax ||
-				object.moveVector[1] > object.moveMax) {
 			object.moveDirections[1] = !object.moveDirections[1];
 		}
 	}
